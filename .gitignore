@@ -1,0 +1,25 @@
+# Build/IDE
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Publish artifacts
+**/publish/
+**/PublishProfiles/*.pubxml.user
+
+# Logs/temp
+*.log
+*.nupkg
+*.snupkg
+TestResult*/
+*.cache/
+*.tmp
+
+# Secrets (если вдруг появятся)
+secrets.json
+*.pfx
+*.key

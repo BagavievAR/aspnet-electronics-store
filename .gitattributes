@@ -1,0 +1,8 @@
+* text=auto
+*.cs   diff=csharp
+*.cshtml text
+*.json text
+*.config text
+*.css text
+*.js  text
+*.sln text eol=crlf
