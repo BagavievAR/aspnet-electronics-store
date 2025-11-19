@@ -26,4 +26,12 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
+app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthorization();
+
 app.Run();
