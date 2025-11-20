@@ -23,3 +23,8 @@ TestResult*/
 secrets.json
 *.pfx
 *.key
+
+# SQLite DB
+/WebApp/*.db
+/WebApp/*.db-shm
+/WebApp/*.db-wal

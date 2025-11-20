@@ -1,3 +1,50 @@
-@{ ViewData["Title"] = "Товар"; }
-<h2>Карточка товара (slug: @ViewBag.Slug)</h2>
-<p>Здесь будут фото, цена, характеристики и кнопка «В корзину».</p>
+@model WebApp.Models.Product
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h2>@Model.Title</h2>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" class="img-fluid mb-3" alt="@Model.Title" />
+}
+
+<p class="text-muted">
+    Категория: @Model.Category?.Name · Бренд: @Model.Brand?.Name
+</p>
+
+<p>@Model.Description</p>
+
+<p class="fs-4 fw-bold">@Model.Price.ToString("N0") ₽</p>
+
+<p>В наличии: @Model.Stock шт.</p>
+
+<div class="mt-3 d-flex gap-2">
+    <a class="btn btn-primary" asp-controller="Cart" asp-action="Index">
+        Добавить в корзину (заглушка)
+    </a>
+
+    <a class="btn btn-outline-secondary"
+       asp-controller="Product"
+       asp-action="Edit"
+       asp-route-id="@Model.Id">
+        Редактировать
+    </a>
+
+    <form asp-controller="Product"
+          asp-action="Delete"
+          asp-route-id="@Model.Id"
+          method="post"
+          onsubmit="return confirm('Точно удалить товар?');">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-outline-danger">
+            Удалить
+        </button>
+    </form>
+
+    <a class="btn btn-link" asp-controller="Catalog" asp-action="Index">
+        ← Вернуться в каталог
+    </a>
+</div>

@@ -1,12 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebApp.Models;
 
+namespace WebApp.Controllers;
 
 public class CatalogController : Controller
 {
-    public IActionResult Index(string? category, string? brand, decimal? min, decimal? max, string sort = "popular", int page = 1)
+    private readonly AppDbContext _db;
+
+    public CatalogController(AppDbContext db)
     {
-        ViewBag.Category = category; ViewBag.Brand = brand;
-        ViewBag.Min = min; ViewBag.Max = max; ViewBag.Sort = sort; ViewBag.Page = page;
-        return View();
+        _db = db;
+    }
+
+    public IActionResult Index(int? categoryId, int? brandId,
+                               decimal? minPrice, decimal? maxPrice)
+    {
+        var query = _db.Products
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Where(p => p.IsPublished);
+
+        if (categoryId.HasValue)
+            query = query.Where(p => p.CategoryId == categoryId.Value);
+
+        if (brandId.HasValue)
+            query = query.Where(p => p.BrandId == brandId.Value);
+
+        if (minPrice.HasValue)
+            query = query.Where(p => p.Price >= minPrice.Value);
+
+        if (maxPrice.HasValue)
+            query = query.Where(p => p.Price <= maxPrice.Value);
+
+        var vm = new CatalogPageVm
+        {
+            Products = query.ToList(),
+            Categories = _db.Categories.OrderBy(c => c.Name).ToList(),
+            Brands = _db.Brands.OrderBy(b => b.Name).ToList(),
+            SelectedCategoryId = categoryId,
+            SelectedBrandId = brandId,
+            MinPrice = minPrice,
+            MaxPrice = maxPrice
+        };
+
+        return View(vm);
     }
 }

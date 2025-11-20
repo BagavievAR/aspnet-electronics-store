@@ -1,35 +1,74 @@
-@{ ViewData["Title"] = "Каталог"; }
-<h2>Каталог (заглушка)</h2>
+@model WebApp.Models.CatalogPageVm
 
-<form class="row g-2 mb-3">
-  <div class="col-md-3"><input name="category" value="@ViewBag.Category" class="form-control" placeholder="Категория"></div>
-  <div class="col-md-3"><input name="brand" value="@ViewBag.Brand" class="form-control" placeholder="Бренд"></div>
-  <div class="col-md-2"><input name="min" value="@ViewBag.Min" class="form-control" placeholder="Мин. цена"></div>
-  <div class="col-md-2"><input name="max" value="@ViewBag.Max" class="form-control" placeholder="Макс. цена"></div>
-  <div class="col-md-2">
-    <select name="sort" class="form-select">
-      <option value="popular" selected>По популярности</option>
-      <option value="price_asc">Цена ↑</option>
-      <option value="price_desc">Цена ↓</option>
-    </select>
-  </div>
-  <div class="col-12"><button class="btn btn-primary">Применить</button></div>
+@{
+    ViewData["Title"] = "Каталог";
+}
+
+<h2>Каталог</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <select name="categoryId" class="form-select">
+            <option value="">Все категории</option>
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.Id" selected="@(Model.SelectedCategoryId == c.Id)">
+                    @c.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="brandId" class="form-select">
+            <option value="">Все бренды</option>
+            @foreach (var b in Model.Brands)
+            {
+                <option value="@b.Id" selected="@(Model.SelectedBrandId == b.Id)">
+                    @b.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <input name="minPrice" value="@Model.MinPrice"
+               class="form-control" placeholder="Мин. цена" />
+    </div>
+    <div class="col-md-2">
+        <input name="maxPrice" value="@Model.MaxPrice"
+               class="form-control" placeholder="Макс. цена" />
+    </div>
+
+    <div class="col-md-2 d-grid">
+        <button class="btn btn-primary">Фильтровать</button>
+    </div>
 </form>
 
-<p class="text-muted">Параметры: category=@ViewBag.Category, brand=@ViewBag.Brand, min=@ViewBag.Min, max=@ViewBag.Max, sort=@ViewBag.Sort, page=@ViewBag.Page</p>
-
 <div class="row row-cols-1 row-cols-md-3 g-3">
-  @for (int i = 1; i <= 6; i++)
-  {
+@foreach (var p in Model.Products)
+{
     <div class="col">
-      <div class="card h-100 product-card">
-        <img class="card-img-top" src="https://via.placeholder.com/600x300" alt="">
-        <div class="card-body">
-          <h5 class="card-title">Товар @i</h5>
-          <p class="card-text">Короткое описание.</p>
-          <a class="btn btn-outline-primary" asp-controller="Product" asp-action="Details" asp-route-slug="demo-@i">Подробнее</a>
+        <div class="card h-100 product-card">
+            @* Фото *@
+            @if (!string.IsNullOrEmpty(p.ImageUrl))
+            {
+                <img src="@p.ImageUrl" class="card-img-top" alt="@p.Title" />
+            }
+            <div class="card-body">
+                <h5 class="card-title">@p.Title</h5>
+                <p class="card-text text-muted">
+                    @p.Category?.Name · @p.Brand?.Name
+                </p>
+                <p class="fw-bold">@p.Price.ToString("N0") ₽</p>
+                <a class="btn btn-outline-primary"
+                   asp-controller="Product"
+                   asp-action="Details"
+                   asp-route-id="@p.Id">
+                    Подробнее
+                </a>
+            </div>
         </div>
-      </div>
     </div>
-  }
+}
 </div>
