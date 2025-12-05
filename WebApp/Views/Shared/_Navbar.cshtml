@@ -1,43 +1,92 @@
-@* простой навбар *@
+@* Верхняя панель навигации *@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" asp-controller="Home" asp-action="Index">ElectroStore</a>
+    <div class="container">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+            ElectroStore
+        </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Переключить навигацию">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Home" asp-action="Index">Главная</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Catalog" asp-action="Index">Каталог</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Cart" asp-action="Index">Корзина</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Home" asp-action="Contacts">Контакты</a>
-        </li>
+        <div class="collapse navbar-collapse" id="mainNav">
+            @* ЛЕВАЯ ЧАСТЬ МЕНЮ *@
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Catalog" asp-action="Index">Каталог</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Cart" asp-action="Index">Корзина</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Contacts">Контакты</a>
+                </li>
 
-        @* ВРЕМЕННО: кнопка для добавления товара (потом сделаем только для админа) *@
-        <li class="nav-item">
-          <a class="nav-link text-warning" asp-controller="Product" asp-action="Create">
-            Добавить товар
-          </a>
-        </li>
-      </ul>
+                @* Меню "Пользователи" только для администратора *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" asp-controller="Users" asp-action="Index">
+                            Пользователи
+                        </a>
+                    </li>
+                }
 
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
-        </li>
-      </ul>
+                @* Кнопка "Добавить товар" тоже только для администратора *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" asp-controller="Product" asp-action="Create">
+                            Добавить товар
+                        </a>
+                    </li>
+                }
+            </ul>
+
+            @* ПРАВАЯ ЧАСТЬ МЕНЮ: гость / пользователь / админ *@
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                @if (!(User?.Identity?.IsAuthenticated ?? false))
+                {
+                    @* ГОСТЬ *@
+                    <li class="nav-item">
+                        <span class="navbar-text me-2">Вы гость</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
+                    </li>
+                }
+                else
+                {
+                    @* АВТОРИЗОВАННЫЙ ПОЛЬЗОВАТЕЛЬ *@
+                    <li class="nav-item">
+                        <span class="navbar-text me-2">
+                            @if (User.IsInRole("Admin"))
+                            {
+                                @:Админ: @User.Identity!.Name
+                            }
+                            else
+                            {
+                                @:Пользователь: @User.Identity!.Name
+                            }
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-link nav-link p-0">
+                                Выход
+                            </button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
-  </div>
 </nav>

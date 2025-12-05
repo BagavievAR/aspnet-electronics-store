@@ -1,0 +1,41 @@
+@model IEnumerable<WebApp.Models.AppUser>
+
+@{
+    ViewData["Title"] = "Управление пользователями";
+}
+
+<h2 class="mt-3">Управление пользователями</h2>
+
+<table class="table table-striped mt-3">
+    <thead>
+    <tr>
+        <th>Логин</th>
+        <th>Текущая роль</th>
+        <th>Изменить роль</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.UserName</td>
+            <td>@user.Role</td>
+            <td>
+                <form asp-controller="Users" asp-action="ChangeRole" method="post" class="d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@user.Id"/>
+
+                    <select name="role" class="form-select form-select-sm" style="width:auto;">
+                        <option value="User" selected="@(user.Role == "User")">User</option>
+                        <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        Сохранить
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -4,7 +4,7 @@
     ViewData["Title"] = Model.Title;
 }
 
-<h2>@Model.Title</h2>
+<h2 class="mt-3">@Model.Title</h2>
 
 @if (!string.IsNullOrEmpty(Model.ImageUrl))
 {
@@ -15,7 +15,10 @@
     Категория: @Model.Category?.Name · Бренд: @Model.Brand?.Name
 </p>
 
-<p>@Model.Description</p>
+@if (!string.IsNullOrWhiteSpace(Model.Description))
+{
+    <p>@Model.Description</p>
+}
 
 <p class="fs-4 fw-bold">@Model.Price.ToString("N0") ₽</p>
 
@@ -26,23 +29,27 @@
         Добавить в корзину (заглушка)
     </a>
 
-    <a class="btn btn-outline-secondary"
-       asp-controller="Product"
-       asp-action="Edit"
-       asp-route-id="@Model.Id">
-        Редактировать
-    </a>
+    @* Кнопки редактирования и удаления видит только админ *@
+    @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+    {
+        <a class="btn btn-outline-secondary"
+           asp-controller="Product"
+           asp-action="Edit"
+           asp-route-id="@Model.Id">
+            Редактировать
+        </a>
 
-    <form asp-controller="Product"
-          asp-action="Delete"
-          asp-route-id="@Model.Id"
-          method="post"
-          onsubmit="return confirm('Точно удалить товар?');">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-outline-danger">
-            Удалить
-        </button>
-    </form>
+        <form asp-controller="Product"
+              asp-action="Delete"
+              asp-route-id="@Model.Id"
+              method="post"
+              onsubmit="return confirm('Точно удалить товар?');">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger">
+                Удалить
+            </button>
+        </form>
+    }
 
     <a class="btn btn-link" asp-controller="Catalog" asp-action="Index">
         ← Вернуться в каталог

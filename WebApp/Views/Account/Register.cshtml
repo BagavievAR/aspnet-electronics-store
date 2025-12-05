@@ -1,8 +1,35 @@
-@{ ViewData["Title"] = "Регистрация"; }
+@model WebApp.Models.RegisterVm
+
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
 <h2>Регистрация</h2>
-<form class="col-md-4">
-  <input class="form-control mb-2" placeholder="Email">
-  <input class="form-control mb-2" placeholder="Имя">
-  <input class="form-control mb-2" type="password" placeholder="Пароль">
-  <button class="btn btn-success">Создать аккаунт</button>
+
+<form asp-action="Register" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label"></label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary">Зарегистрироваться</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
