@@ -1,7 +1,31 @@
-@{ ViewData["Title"] = "Вход"; }
+@model WebApp.Models.LoginVm
+
+@{
+    ViewData["Title"] = "Вход";
+}
+
 <h2>Вход</h2>
-<form class="col-md-4">
-  <input class="form-control mb-2" placeholder="Email">
-  <input class="form-control mb-2" type="password" placeholder="Пароль">
-  <button class="btn btn-primary">Войти</button>
+
+<form asp-action="Login" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <div class="mb-3">
+        <label asp-for="UserName" class="form-label"></label>
+        <input asp-for="UserName" class="form-control" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary">Войти</button>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

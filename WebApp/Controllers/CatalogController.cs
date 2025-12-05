@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
@@ -13,6 +14,8 @@ public class CatalogController : Controller
         _db = db;
     }
 
+    // Страница каталога доступна всем (включая гостей)
+    [AllowAnonymous]
     public IActionResult Index(int? categoryId, int? brandId,
                                decimal? minPrice, decimal? maxPrice)
     {
@@ -29,6 +32,9 @@ public class CatalogController : Controller
 
         if (minPrice.HasValue)
             query = query.Where(p => p.Price >= minPrice.Value);
+
+        if (maxPrice.HasValue)
+            query = query.Where(p => p.Price <= maxPrice.Value);
 
         if (maxPrice.HasValue)
             query = query.Where(p => p.Price <= maxPrice.Value);

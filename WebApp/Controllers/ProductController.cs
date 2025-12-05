@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Models;
@@ -13,6 +14,8 @@ public class ProductController : Controller
         _db = db;
     }
 
+    // Детальная страница товара доступна всем (включая гостей)
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var product = _db.Products
@@ -25,6 +28,9 @@ public class ProductController : Controller
         return View(product);
     }
 
+    // ---------- СОЗДАНИЕ (только админ) ----------
+
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public IActionResult Create()
     {
@@ -36,6 +42,7 @@ public class ProductController : Controller
         return View(vm);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(ProductEditVm vm)
@@ -65,8 +72,9 @@ public class ProductController : Controller
         return RedirectToAction("Details", new { id = product.Id });
     }
 
-    // ---------- РЕДАКТИРОВАНИЕ ----------
+    // ---------- РЕДАКТИРОВАНИЕ (только админ) ----------
 
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public IActionResult Edit(int id)
     {
@@ -90,6 +98,7 @@ public class ProductController : Controller
         return View(vm);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Edit(int id, ProductEditVm vm)
@@ -119,8 +128,9 @@ public class ProductController : Controller
         return RedirectToAction("Details", new { id = product.Id });
     }
 
-    // ---------- УДАЛЕНИЕ ----------
+    // ---------- УДАЛЕНИЕ (только админ) ----------
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(int id)

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApp;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using WebApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString));
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";          // куда редиректить неавторизованных
+        options.AccessDeniedPath = "/Account/Denied";  // страница "нет доступа"
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -37,6 +47,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // обычный маршрут контроллеров
