@@ -6,6 +6,11 @@
 
 <h2>Каталог</h2>
 
+<p class="text-muted">
+    Категории загружены из кэша: @Model.CategoriesGenerated.ToString("HH:mm:ss") <br />
+    Бренды загружены из кэша: @Model.BrandsGenerated.ToString("HH:mm:ss")
+</p>
+
 <form method="get" class="row g-2 mb-3">
     <div class="col-md-3">
         <select name="categoryId" class="form-select">
