@@ -1,3 +1,72 @@
-@{ ViewData["Title"] = "Корзина"; }
-<h2>Корзина</h2>
-<p>Пока пусто. Тут будет таблица с товарами (Session).</p>
+@model List<WebApp.Models.CartItem>
+@inject WebApp.Models.AppDbContext Db
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h2 class="mt-3">Корзина</h2>
+
+@if (!Model.Any())
+{
+    <p>Корзина пуста.</p>
+}
+else
+{
+    <table class="table mt-3">
+        <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Количество</th>
+            <th>Цена</th>
+            <th>Сумма</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @{
+            decimal total = 0;
+        }
+
+        @foreach (var item in Model)
+        {
+            var product = Db.Products.FirstOrDefault(p => p.Id == item.ProductId);
+            if (product is null)
+            {
+                continue;
+            }
+
+            var line = product.Price * item.Quantity;
+            total += line;
+
+            <tr>
+                <td>@product.Title</td>
+                <td>@item.Quantity</td>
+                <td>@product.Price.ToString("N0") ₽</td>
+                <td>@line.ToString("N0") ₽</td>
+                <td>
+                    <form asp-controller="Cart"
+                          asp-action="Remove"
+                          method="post"
+                          class="d-inline">
+                        <input type="hidden" name="productId" value="@item.ProductId" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+
+        <tr class="fw-bold">
+            <td colspan="3" class="text-end">Итого:</td>
+            <td>@total.ToString("N0") ₽</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Catalog" asp-action="Index" class="btn btn-link">
+    ← Вернуться в каталог
+</a>

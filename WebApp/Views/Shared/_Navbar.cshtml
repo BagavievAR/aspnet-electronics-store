@@ -26,7 +26,6 @@
                     <a class="nav-link" asp-controller="Home" asp-action="Contacts">Контакты</a>
                 </li>
 
-                @* Меню "Пользователи" только для администратора *@
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="nav-item">
@@ -34,11 +33,11 @@
                             Пользователи
                         </a>
                     </li>
-                }
-
-                @* Кнопка "Добавить товар" тоже только для администратора *@
-                @if (User.IsInRole("Admin"))
-                {
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" asp-controller="Stats" asp-action="Index">
+                            Статистика
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link text-warning" asp-controller="Product" asp-action="Create">
                             Добавить товар

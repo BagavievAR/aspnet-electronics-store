@@ -1,4 +1,77 @@
-﻿@{ ViewData["Title"] = "Главная"; }
-<h1>ElectroStore</h1>
-<p class="text-muted">Учебный каркас ASP.NET MVC</p>
-<a class="btn btn-primary" asp-controller="Catalog" asp-action="Index">Перейти в каталог</a>
+﻿@{
+    ViewData["Title"] = "Главная";
+
+    // читаем куку, будет "1", если баннер скрыт
+    var hidePromo = Context.Request.Cookies["HidePromoBanner"] == "1";
+}
+
+<!-- Приветственный баннер (Cookies) -->
+@if (!hidePromo)
+{
+    <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Добро пожаловать в ElectroStore!</strong>
+                <span class="ms-2">Это приветственное сообщение можно скрыть — мы запомним это с помощью cookie.</span>
+            </div>
+
+            <form asp-controller="Home" asp-action="HidePromo" method="post" class="ms-3">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-close" aria-label="Закрыть"></button>
+            </form>
+        </div>
+    </div>
+}
+
+<!-- Основной контент главной страницы -->
+<div class="container mt-4">
+    <h1 class="display-5">ElectroStore — интернет-магазин техники</h1>
+
+    <p class="lead mt-3">
+        Добро пожаловать! Здесь вы можете просматривать каталог, фильтровать товары, добавлять их в корзину и оформлять покупки.
+    </p>
+
+    <hr class="my-4" />
+
+    <h2 class="mt-4">Популярные категории</h2>
+
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Смартфоны</h5>
+                    <p class="card-text">Современные модели от Apple, Samsung, Xiaomi и других брендов.</p>
+                    <a href="/Catalog?categoryId=1" class="btn btn-outline-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-3 mt-md-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Наушники</h5>
+                    <p class="card-text">Беспроводные, проводные и игровые гарнитуры на любой вкус.</p>
+                    <a href="/Catalog?categoryId=2" class="btn btn-outline-primary">Перейти</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mt-3 mt-md-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Аксессуары</h5>
+                    <p class="card-text">Зарядки, чехлы, кабели и другие полезные устройства.</p>
+                    <a href="/Catalog" class="btn btn-outline-primary">Смотреть всё</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <h2>О магазине</h2>
+    <p>
+        ElectroStore — учебный проект на ASP.NET MVC с поддержкой аутентификации, ролей, корзины, ORM Entity Framework,
+        сессий, кэша, cookies и других возможностей современного веб-приложения.
+    </p>
+</div>

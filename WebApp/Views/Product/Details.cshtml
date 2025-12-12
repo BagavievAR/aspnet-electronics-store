@@ -21,15 +21,33 @@
 }
 
 <p class="fs-4 fw-bold">@Model.Price.ToString("N0") ₽</p>
-
 <p>В наличии: @Model.Stock шт.</p>
 
-<div class="mt-3 d-flex gap-2">
-    <a class="btn btn-primary" asp-controller="Cart" asp-action="Index">
-        Добавить в корзину (заглушка)
-    </a>
+<hr />
 
-    @* Кнопки редактирования и удаления видит только админ *@
+<div class="mt-3 d-flex gap-2">
+    @* КОРЗИНА *@
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <form asp-controller="Cart" asp-action="Add" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">
+                Добавить в корзину
+            </button>
+        </form>
+    }
+    else
+    {
+        <a asp-controller="Account"
+           asp-action="Login"
+           asp-route-returnUrl="@Url.Action("Details","Product", new { id = Model.Id })"
+           class="btn btn-primary">
+            Войдите, чтобы добавить в корзину
+        </a>
+    }
+
+    @* КНОПКИ ДЛЯ АДМИНА *@
     @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
     {
         <a class="btn btn-outline-secondary"
@@ -43,6 +61,7 @@
               asp-action="Delete"
               asp-route-id="@Model.Id"
               method="post"
+              class="d-inline"
               onsubmit="return confirm('Точно удалить товар?');">
             @Html.AntiForgeryToken()
             <button type="submit" class="btn btn-outline-danger">
